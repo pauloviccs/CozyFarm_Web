@@ -5,8 +5,9 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { ItemModal } from "@/components/ui/ItemModal";
 import { useLanguage } from "@/context/LanguageContext";
 import { ITEMS, type Item, type GameSource, type ItemCategory } from "@/data/items";
-import { Search, Package, Sprout, Factory, Wheat, Egg, UtensilsCrossed, Flower2, Box, GitCompare } from "lucide-react";
+import { Search, Package, Sprout, Factory, Wheat, Egg, UtensilsCrossed, Flower2, Box, GitCompare, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/context/AuthContext";
 
 const CATEGORY_ICONS: Record<ItemCategory, React.ElementType> = {
   crops: Sprout,
@@ -32,9 +33,11 @@ const CATEGORY_LABELS: Record<ItemCategory, { en: string; pt: string }> = {
 
 export default function ItemsPage() {
   const { t, language } = useLanguage();
+  const { user, completedItems } = useAuth();
   const [search, setSearch] = useState("");
   const [gameFilter, setGameFilter] = useState<GameSource | "all">("all");
   const [categoryFilter, setCategoryFilter] = useState<ItemCategory | "all">("all");
+  const [completionFilter, setCompletionFilter] = useState<"all" | "completed" | "incomplete">("all");
   const [compareMode, setCompareMode] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
 
@@ -52,9 +55,16 @@ export default function ItemsPage() {
       const matchesGame = gameFilter === "all" || item.game === gameFilter;
       const matchesCategory = categoryFilter === "all" || item.category === categoryFilter;
       const matchesCompare = !compareMode || sharedItemNames.has(item.name.toLowerCase().trim());
-      return matchesSearch && matchesGame && matchesCategory && matchesCompare;
+
+      const isCompleted = completedItems.has(item.id);
+      const matchesCompletion =
+        completionFilter === "all" ||
+        (completionFilter === "completed" && isCompleted) ||
+        (completionFilter === "incomplete" && !isCompleted);
+
+      return matchesSearch && matchesGame && matchesCategory && matchesCompare && matchesCompletion;
     });
-  }, [search, gameFilter, categoryFilter, compareMode, sharedItemNames, language]);
+  }, [search, gameFilter, categoryFilter, compareMode, sharedItemNames, language, completionFilter, completedItems]);
 
   const getItemDisplayName = (item: Item) => (language === "pt" && item.namePt ? item.namePt : item.name);
 
@@ -115,6 +125,30 @@ export default function ItemsPage() {
                 <GitCompare className="w-4 h-4" />
                 {language === "pt" ? "Comparar" : "Compare"}
               </button>
+
+              {/* Completion Filter (Only if logged in) */}
+              {user && (
+                <div className="flex bg-white/5 rounded-lg border border-white/10 p-1">
+                  {(["all", "incomplete", "completed"] as const).map((filter) => (
+                    <button
+                      key={filter}
+                      onClick={() => setCompletionFilter(filter)}
+                      className={cn(
+                        "px-3 py-1.5 rounded-md text-xs font-medium transition-all",
+                        completionFilter === filter
+                          ? "bg-white/10 text-white shadow-sm"
+                          : "text-white/40 hover:text-white/70"
+                      )}
+                    >
+                      {filter === "all"
+                        ? (language === "pt" ? "Todos" : "All")
+                        : filter === "completed"
+                          ? (language === "pt" ? "Completos" : "Completed")
+                          : (language === "pt" ? "Pendentes" : "Incomplete")}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -147,23 +181,31 @@ export default function ItemsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {filteredItems.map((item) => {
               const Icon = CATEGORY_ICONS[item.category];
+              const isCompleted = completedItems.has(item.id);
               return (
                 <GlassCard
                   key={item.id}
                   variant="hoverable"
-                  className="p-4 flex flex-col gap-2 min-h-[100px]"
+                  className={cn(
+                    "p-4 flex flex-col gap-2 min-h-[100px] transition-all duration-500",
+                    isCompleted && "border-emerald-500/30 bg-emerald-500/5 shadow-[0_0_15px_rgba(16,185,129,0.1)]"
+                  )}
                   onClick={() => setSelectedItem(item)}
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2 min-w-0">
                       <div className={cn(
-                        "p-2 rounded-lg shrink-0",
-                        item.game === "stardew" ? "bg-amber-500/20" : "bg-cyan-500/20"
+                        "p-2 rounded-lg shrink-0 transition-colors",
+                        isCompleted
+                          ? "bg-emerald-500/20 text-emerald-400"
+                          : item.game === "stardew" ? "bg-amber-500/20 text-amber-400" : "bg-cyan-500/20 text-cyan-400"
                       )}>
-                        <Icon className={cn("w-4 h-4", item.game === "stardew" ? "text-amber-400" : "text-cyan-400")} />
+                        {isCompleted ? <CheckCircle className="w-4 h-4" /> : <Icon className="w-4 h-4" />}
                       </div>
                       <div className="min-w-0">
-                        <h3 className="font-medium text-white truncate">{getItemDisplayName(item)}</h3>
+                        <h3 className={cn("font-medium truncate transition-colors", isCompleted ? "text-emerald-200" : "text-white")}>
+                          {getItemDisplayName(item)}
+                        </h3>
                         <p className="text-xs text-white/40">{getCategoryLabel(item.category)}</p>
                       </div>
                     </div>

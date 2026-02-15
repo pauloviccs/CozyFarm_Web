@@ -1,10 +1,11 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Sprout, Package, Egg, Factory, UtensilsCrossed, Flower2, Box, ExternalLink } from "lucide-react";
+import { X, Sprout, Package, Egg, Factory, UtensilsCrossed, Flower2, Box, ExternalLink, CheckCircle } from "lucide-react";
 import { GlassCard } from "@/components/ui/glass-card";
 import { type Item, type ItemCategory } from "@/data/items";
 import { useLanguage } from "@/context/LanguageContext";
+import { useAuth } from "@/context/AuthContext"; // Import useAuth
 import { cn } from "@/lib/utils";
 
 interface ItemModalProps {
@@ -37,6 +38,7 @@ const CATEGORY_LABELS: Record<ItemCategory, { en: string; pt: string }> = {
 
 export function ItemModal({ item, isOpen, onClose }: ItemModalProps) {
     const { language } = useLanguage();
+    const { user, completedItems, toggleItemCompletion } = useAuth(); // Use Auth Context
 
     if (!item) return null;
 
@@ -44,6 +46,8 @@ export function ItemModal({ item, isOpen, onClose }: ItemModalProps) {
     const displayName = language === "pt" && item.namePt ? item.namePt : item.name;
     const displayCategory = language === "pt" ? CATEGORY_LABELS[item.category].pt : CATEGORY_LABELS[item.category].en;
     const description = language === "pt" && item.descriptionPt ? item.descriptionPt : item.description;
+
+    const isCompleted = completedItems.has(item.id);
 
     return (
         <AnimatePresence>
@@ -154,6 +158,25 @@ export function ItemModal({ item, isOpen, onClose }: ItemModalProps) {
                                         </p>
                                     </div>
                                 </div>
+
+                                {user && (
+                                    <button
+                                        onClick={() => toggleItemCompletion(item.id)}
+                                        className={cn(
+                                            "w-full py-3 rounded-xl flex items-center justify-center gap-2 font-medium transition-all duration-300",
+                                            isCompleted
+                                                ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30"
+                                                : "bg-white/5 text-white/60 border border-white/10 hover:bg-white/10 hover:text-white"
+                                        )}
+                                    >
+                                        <CheckCircle className={cn("w-5 h-5", isCompleted && "fill-current")} />
+                                        <span>
+                                            {isCompleted
+                                                ? (language === "pt" ? "Completado" : "Completed")
+                                                : (language === "pt" ? "Marcar como Completo" : "Mark as Complete")}
+                                        </span>
+                                    </button>
+                                )}
                             </div>
                         </GlassCard>
                     </motion.div>
