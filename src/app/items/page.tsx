@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { GlassCard } from "@/components/ui/glass-card";
+import { ItemModal } from "@/components/ui/ItemModal";
 import { useLanguage } from "@/context/LanguageContext";
 import { ITEMS, type Item, type GameSource, type ItemCategory } from "@/data/items";
 import { Search, Package, Sprout, Factory, Wheat, Egg, UtensilsCrossed, Flower2, Box, GitCompare } from "lucide-react";
@@ -35,6 +36,7 @@ export default function ItemsPage() {
   const [gameFilter, setGameFilter] = useState<GameSource | "all">("all");
   const [categoryFilter, setCategoryFilter] = useState<ItemCategory | "all">("all");
   const [compareMode, setCompareMode] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
 
   // Items that exist in BOTH games (matched by normalized English name)
   const sharedItemNames = useMemo(() => {
@@ -150,6 +152,7 @@ export default function ItemsPage() {
                   key={item.id}
                   variant="hoverable"
                   className="p-4 flex flex-col gap-2 min-h-[100px]"
+                  onClick={() => setSelectedItem(item)}
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2 min-w-0">
@@ -185,6 +188,12 @@ export default function ItemsPage() {
           </div>
         </div>
       </section>
+
+      <ItemModal
+        item={selectedItem}
+        isOpen={!!selectedItem}
+        onClose={() => setSelectedItem(null)}
+      />
     </div>
   );
 }
