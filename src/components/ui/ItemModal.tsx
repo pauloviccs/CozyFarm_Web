@@ -64,10 +64,10 @@ export function ItemModal({ item, isOpen, onClose }: ItemModalProps) {
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
                         transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
-                        className="fixed z-50 w-full max-w-lg pointer-events-none flex items-center justify-center"
+                        className="fixed inset-0 z-[51] w-full h-full pointer-events-none flex items-center justify-center p-4"
                     >
                         <GlassCard
-                            className="w-full pointer-events-auto relative overflow-hidden bg-slate-900/80 border-white/10 shadow-2xl shadow-purple-900/20"
+                            className="w-full max-w-lg pointer-events-auto relative overflow-hidden bg-slate-900/80 border-white/10 shadow-2xl shadow-purple-900/20"
                         >
                             {/* Header Image / Icon Area */}
                             <div className={cn(
