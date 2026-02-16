@@ -27,7 +27,9 @@ export default function RootLayout({
           <AuthProvider>
             <Sidebar />
             <div className="flex-1 relative flex flex-col">
-              <Header />
+              <div className="absolute top-0 w-full z-50">
+                <Header />
+              </div>
               <div className="fluid-bg absolute inset-0 pointer-events-none fixed" />
               <main className="flex-1 relative z-10 scroll-smooth">
                 {children}
