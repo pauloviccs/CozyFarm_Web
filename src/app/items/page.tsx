@@ -128,152 +128,189 @@ export default function ItemsPage() {
           </p>
         </div>
 
-        {/* Filters & Actions */}
+        {/* Filters & Actions Toolbar */}
         <GlassCard className="p-6 space-y-6 sticky top-24 z-30 backdrop-blur-xl bg-slate-900/80 border-white/10 shadow-2xl">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+          {/* Top Row: Search and Primary Controls */}
+          <div className="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center">
+            {/* Search Input */}
+            <div className="relative w-full lg:max-w-md group">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search className="h-5 w-5 text-white/40 group-focus-within:text-purple-400 transition-colors" />
+              </div>
               <input
                 type="text"
-                placeholder={language === "pt" ? "Buscar itens..." : "Search items..."}
+                placeholder={language === "pt" ? "Buscar por nome..." : "Search by name..."}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/40 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50"
+                className="block w-full pl-10 pr-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all shadow-sm hover:bg-white/10"
               />
             </div>
 
-            <div className="flex gap-2 flex-wrap items-center">
-              {/* Game Filter Buttons */}
-              {(["all", "stardew", "hytale"] as const).map((g) => (
+            {/* Action Buttons Group */}
+            <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto justify-end">
+              {/* Selection Mode Toggle */}
+              {user && (
                 <button
-                  key={g}
-                  onClick={() => setGameFilter(g)}
+                  onClick={toggleSelectionMode}
                   className={cn(
-                    "px-4 py-2 rounded-lg text-sm font-medium transition-all border",
-                    gameFilter === g
-                      ? "bg-purple-500/20 border-purple-500 text-purple-200"
+                    "px-3 py-2 rounded-lg text-sm font-medium transition-all border flex items-center gap-2",
+                    isSelectionMode
+                      ? "bg-amber-500/20 border-amber-500/50 text-amber-200 shadow-[0_0_10px_rgba(245,158,11,0.1)]"
                       : "bg-white/5 border-white/10 text-white/60 hover:bg-white/10 hover:text-white"
                   )}
+                  title={isSelectionMode ? (language === "pt" ? "Cancelar Seleção" : "Cancel Selection") : (language === "pt" ? "Modo de Seleção" : "Selection Mode")}
                 >
-                  {g === "all" ? (language === "pt" ? "Todos" : "All") : g === "stardew" ? "Stardew Valley" : "Hytale"}
+                  <Box className="w-4 h-4" />
+                  <span className="hidden sm:inline">{isSelectionMode ? t("items.cancel_selection") : t("items.select_mode")}</span>
                 </button>
-              ))}
+              )}
 
               {/* Compare Toggle */}
               <button
                 onClick={() => setCompareMode(!compareMode)}
                 className={cn(
-                  "px-4 py-2 rounded-lg text-sm font-medium transition-all border flex items-center gap-2",
+                  "px-3 py-2 rounded-lg text-sm font-medium transition-all border flex items-center gap-2",
                   compareMode
-                    ? "bg-cyan-500/20 border-cyan-500 text-cyan-200"
+                    ? "bg-cyan-500/20 border-cyan-500/50 text-cyan-200 shadow-[0_0_10px_rgba(6,182,212,0.1)]"
                     : "bg-white/5 border-white/10 text-white/60 hover:bg-white/10 hover:text-white"
                 )}
-                title={language === "pt" ? "Mostrar apenas itens que existem em ambos os jogos" : "Show only items that exist in both games"}
+                title={language === "pt" ? "Mostrar apenas itens compartilhados" : "Show shared items only"}
               >
                 <GitCompare className="w-4 h-4" />
-                {language === "pt" ? "Comparar" : "Compare"}
+                <span className="hidden sm:inline">{language === "pt" ? "Comparar" : "Compare"}</span>
               </button>
+            </div>
+          </div>
 
-              {/* Completion Filter (Logged In) */}
-              {user && (
-                <div className="flex bg-white/5 rounded-lg border border-white/10 p-1">
+          <div className="h-px bg-white/5 w-full" />
+
+          {/* Middle Row: Filter Groups */}
+          <div className="flex flex-col md:flex-row gap-6 justify-between items-start md:items-center">
+            {/* Game Source Filter */}
+            <div className="space-y-2 w-full md:w-auto">
+              <label className="text-[10px] uppercase tracking-wider font-semibold text-white/30 pl-1">
+                {language === "pt" ? "Origem" : "Source"}
+              </label>
+              <div className="flex bg-slate-950/50 p-1 rounded-xl border border-white/5 w-full md:w-auto overflow-x-auto">
+                {(["all", "stardew", "hytale"] as const).map((g) => (
+                  <button
+                    key={g}
+                    onClick={() => setGameFilter(g)}
+                    className={cn(
+                      "flex-1 md:flex-none px-4 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap",
+                      gameFilter === g
+                        ? "bg-purple-500 text-white shadow-lg"
+                        : "text-white/40 hover:text-white hover:bg-white/5"
+                    )}
+                  >
+                    {g === "all" ? (language === "pt" ? "Todos" : "All") : g === "stardew" ? "Stardew Valley" : "Hytale"}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Status Filter (Logged In) */}
+            {user && (
+              <div className="space-y-2 w-full md:w-auto">
+                <label className="text-[10px] uppercase tracking-wider font-semibold text-white/30 pl-1">
+                  {language === "pt" ? "Estado" : "Status"}
+                </label>
+                <div className="flex bg-slate-950/50 p-1 rounded-xl border border-white/5 w-full md:w-auto overflow-x-auto">
                   {(["all", "incomplete", "completed"] as const).map((filter) => (
                     <button
                       key={filter}
                       onClick={() => setCompletionFilter(filter)}
                       className={cn(
-                        "px-3 py-1.5 rounded-md text-xs font-medium transition-all",
+                        "flex-1 md:flex-none px-4 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap",
                         completionFilter === filter
-                          ? "bg-white/10 text-white shadow-sm"
-                          : "text-white/40 hover:text-white/70"
+                          ? "bg-emerald-500 text-white shadow-lg"
+                          : "text-white/40 hover:text-white hover:bg-white/5"
                       )}
                     >
                       {filter === "all"
                         ? (language === "pt" ? "Todos" : "All")
                         : filter === "completed"
                           ? (language === "pt" ? "Completos" : "Completed")
-                          : (language === "pt" ? "Pendentes" : "Incomplete")}
+                          : (language === "pt" ? "Pendentes" : "Pending")}
                     </button>
                   ))}
                 </div>
-              )}
+              </div>
+            )}
+          </div>
 
-              {/* Selection Mode Toggle (Logged In) */}
-              {user && (
-                <button
-                  onClick={toggleSelectionMode}
-                  className={cn(
-                    "px-4 py-2 rounded-lg text-sm font-medium transition-all border flex items-center gap-2",
-                    isSelectionMode
-                      ? "bg-amber-500/20 border-amber-500 text-amber-200"
-                      : "bg-white/5 border-white/10 text-white/60 hover:bg-white/10 hover:text-white"
-                  )}
-                >
-                  <Box className="w-4 h-4" />
-                  {isSelectionMode ? t("items.cancel_selection") : t("items.select_mode")}
-                </button>
-              )}
+          {/* Categories */}
+          <div className="space-y-3">
+            <label className="text-[10px] uppercase tracking-wider font-semibold text-white/30 pl-1">
+              {language === "pt" ? "Categorias" : "Categories"}
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {(["all", ...Object.keys(CATEGORY_LABELS)] as (ItemCategory | "all")[]).map((cat) => {
+                const Icon = cat !== "all" ? CATEGORY_ICONS[cat] : null;
+                const isActive = categoryFilter === cat;
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => setCategoryFilter(cat)}
+                    className={cn(
+                      "px-3 py-2 rounded-lg text-xs font-medium transition-all border flex items-center gap-2",
+                      isActive
+                        ? "bg-white/10 border-white/20 text-white shadow-sm"
+                        : "bg-transparent border-transparent text-white/40 hover:bg-white/5 hover:text-white/80"
+                    )}
+                  >
+                    {Icon && <Icon className={cn("w-3.5 h-3.5", isActive ? "text-purple-400" : "opacity-50")} />}
+                    {cat === "all" ? (language === "pt" ? "Todas" : "All") : getCategoryLabel(cat)}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          {/* Category Filters */}
-          <div className="flex flex-wrap gap-2">
-            {(["all", ...Object.keys(CATEGORY_LABELS)] as (ItemCategory | "all")[]).map((cat) => {
-              const Icon = cat !== "all" ? CATEGORY_ICONS[cat] : null;
-              return (
-                <button
-                  key={cat}
-                  onClick={() => setCategoryFilter(cat)}
-                  className={cn(
-                    "px-3 py-1.5 rounded-lg text-xs font-medium transition-all border flex items-center gap-2",
-                    categoryFilter === cat
-                      ? "bg-emerald-500/20 border-emerald-500 text-emerald-200"
-                      : "bg-white/5 border-white/10 text-white/50 hover:bg-white/10 hover:text-white"
-                  )}
-                >
-                  {Icon && <Icon className="w-3.5 h-3.5" />}
-                  {cat === "all" ? (language === "pt" ? "Todas" : "All") : getCategoryLabel(cat)}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Batch Actions Bar (Selection Mode Active) */}
+          {/* Selection Bar */}
           {isSelectionMode && (
-            <div className="flex items-center justify-between pt-4 border-t border-white/10 animate-in fade-in slide-in-from-top-2">
-              <div className="flex items-center gap-4">
-                <span className="text-sm text-amber-200 font-medium bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
-                  {t("items.selected_count").replace("{count}", selectedItems.size.toString())}
-                </span>
-                <div className="flex gap-2">
-                  <button onClick={selectAll} className="text-xs text-white/40 hover:text-white underline">
-                    {t("items.select_all")}
+            <div className="pt-4 mt-2 border-t border-white/10 animate-in fade-in zoom-in-95 duration-200">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-amber-500/10 border border-amber-500/20 rounded-xl p-3">
+                <div className="flex items-center gap-3">
+                  <div className="bg-amber-500/20 p-2 rounded-lg text-amber-200">
+                    <CheckCircle className="w-5 h-5" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium text-amber-100">
+                      {t("items.selected_count").replace("{count}", selectedItems.size.toString())}
+                    </span>
+                    <div className="flex gap-3 text-xs">
+                      <button onClick={selectAll} className="text-amber-200/60 hover:text-amber-200 underline transition-colors">
+                        {t("items.select_all")}
+                      </button>
+                      <button onClick={deselectAll} className="text-amber-200/60 hover:text-amber-200 underline transition-colors">
+                        {t("items.deselect_all")}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-2 w-full sm:w-auto">
+                  <button
+                    onClick={handleBatchIncomplete}
+                    disabled={selectedItems.size === 0}
+                    className="flex-1 sm:flex-none px-4 py-2 rounded-lg bg-slate-900/50 hover:bg-slate-900 text-white/70 hover:text-white text-xs font-medium transition-colors border border-white/5 disabled:opacity-50"
+                  >
+                    {t("items.mark_incomplete")}
                   </button>
-                  <button onClick={deselectAll} className="text-xs text-white/40 hover:text-white underline">
-                    {t("items.deselect_all")}
+                  <button
+                    onClick={handleBatchComplete}
+                    disabled={selectedItems.size === 0}
+                    className="flex-1 sm:flex-none px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-medium transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    <CheckCircle className="w-3.5 h-3.5" />
+                    {t("items.mark_complete")}
                   </button>
                 </div>
               </div>
-
-              <div className="flex gap-2">
-                <button
-                  onClick={handleBatchIncomplete}
-                  disabled={selectedItems.size === 0}
-                  className="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-white text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {t("items.mark_incomplete")}
-                </button>
-                <button
-                  onClick={handleBatchComplete}
-                  disabled={selectedItems.size === 0}
-                  className="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                >
-                  <CheckCircle className="w-4 h-4" />
-                  {t("items.mark_complete")}
-                </button>
-              </div>
             </div>
           )}
+
         </GlassCard>
 
         {/* Results Grid */}
