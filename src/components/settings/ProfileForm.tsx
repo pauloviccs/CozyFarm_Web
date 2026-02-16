@@ -20,7 +20,7 @@ export function ProfileForm() {
     const [isUploading, setIsUploading] = useState(false);
 
     const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!e.target.files || e.target.files.length === 0) return;
+        if (!e.target.files || e.target.files.length === 0 || !user) return;
 
         setIsUploading(true);
         setMessage(null);
@@ -28,11 +28,11 @@ export function ProfileForm() {
         try {
             const file = e.target.files[0];
             const fileExt = file.name.split('.').pop();
-            const filePath = `public/${user?.id}/${Date.now()}.${fileExt}`;
+            const filePath = `${user.id}/${Date.now()}.${fileExt}`;
 
             const { error: uploadError } = await supabase.storage
                 .from('avatars')
-                .upload(filePath, file);
+                .upload(filePath, file, { upsert: true });
 
             if (uploadError) throw uploadError;
 
@@ -43,8 +43,8 @@ export function ProfileForm() {
             setAvatarUrl(publicUrl);
             setMessage({ type: 'success', text: 'Imagem carregada! Não esqueça de salvar.' });
         } catch (error: any) {
-            console.error('Error uploads avatar:', error);
-            setMessage({ type: 'error', text: 'Erro ao fazer upload da imagem.' });
+            console.error('Error uploading avatar:', error);
+            setMessage({ type: 'error', text: 'Erro ao fazer upload: ' + (error.message || 'Bucket não encontrado?') });
         } finally {
             setIsUploading(false);
         }
