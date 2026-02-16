@@ -9,6 +9,8 @@ interface AuthContextType {
     user: User | null;
     completedItems: Set<string>;
     signInWithDiscord: () => Promise<void>;
+    signInWithEmail: (email: string, password: string) => Promise<{ error: any }>;
+    signUpWithEmail: (email: string, password: string) => Promise<{ error: any }>;
     signOut: () => Promise<void>;
     toggleItemCompletion: (itemId: string) => Promise<void>;
     isLoading: boolean;
@@ -81,6 +83,22 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         });
     };
 
+    const signInWithEmail = async (email: string, password: string) => {
+        const { error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        });
+        return { error };
+    };
+
+    const signUpWithEmail = async (email: string, password: string) => {
+        const { error } = await supabase.auth.signUp({
+            email,
+            password,
+        });
+        return { error };
+    };
+
     const signOut = async () => {
         await supabase.auth.signOut();
         setCompletedItems(new Set());
@@ -129,6 +147,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             user,
             completedItems,
             signInWithDiscord,
+            signInWithEmail,
+            signUpWithEmail,
             signOut,
             toggleItemCompletion,
             isLoading
