@@ -29,7 +29,7 @@ export function HeroSequence() {
                 const promise = new Promise<void>((resolve) => {
                     const img = new Image();
                     const paddedIndex = i.toString().padStart(3, "0");
-                    img.src = `/hero-sequence/1080p_${paddedIndex}.jpg`;
+                    img.src = `/hero-sequence/1080p_5.mp4_conv_${paddedIndex}.jpg`;
                     img.onload = () => {
                         loadedImages[i] = img;
                         loadedCount++;
