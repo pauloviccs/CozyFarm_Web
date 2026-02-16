@@ -26,7 +26,7 @@ export default function RootLayout({
         <LanguageProvider>
           <AuthProvider>
             <Sidebar />
-            <div className="flex-1 relative flex flex-col min-w-0 min-h-0 overflow-hidden">
+            <div className="flex-1 relative flex flex-col min-w-0 min-h-0">
               <Header />
               <div className="fluid-bg absolute inset-0 pointer-events-none" />
               <main className="flex-1 min-h-0 overflow-y-auto p-8 lg:p-12 relative z-10 scroll-smooth">
