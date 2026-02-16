@@ -114,22 +114,24 @@ export function HeroSequence() {
                 {/* Cinematic Overlay */}
                 <motion.div
                     className="absolute inset-0 flex flex-col items-center justify-center text-center z-10 pointer-events-none"
-                    style={{ opacity, scale }}
+                    style={{ opacity }}
                 >
-                    <div className="max-w-4xl px-6 space-y-8">
+                    <motion.div
+                        className="max-w-5xl px-6 space-y-10 flex flex-col items-center"
+                        style={{ scale, y: textY }}
+                    >
                         <motion.div
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 1, ease: "easeOut", delay: 0.5 }}
-                            style={{ y: textY }}
                         >
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-purple-300 backdrop-blur-md mb-6 pointer-events-auto">
-                                <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
-                                <span>Interactive Blueprint System</span>
+                            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-purple-300 backdrop-blur-md mb-8 pointer-events-auto hover:bg-white/10 transition-colors cursor-default">
+                                <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse shadow-[0_0_10px_rgba(192,132,252,0.5)]" />
+                                <span className="tracking-wide uppercase">Interactive Blueprint System</span>
                             </div>
 
-                            <h1 className="text-7xl lg:text-9xl font-thin tracking-tighter text-white mb-6">
-                                Cozy<span className="font-normal text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-emerald-400">Farming</span>
+                            <h1 className="text-8xl lg:text-[10rem] font-thin tracking-tighter text-white mb-2 leading-none select-none drop-shadow-2xl">
+                                Cozy<span className="font-normal text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-fuchsia-400 to-emerald-400">Farming</span>
                             </h1>
                         </motion.div>
 
@@ -137,8 +139,7 @@ export function HeroSequence() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ duration: 1, delay: 0.8 }}
-                            className="text-2xl text-white/60 font-light max-w-2xl mx-auto leading-relaxed"
-                            style={{ y: textY }}
+                            className="text-2xl md:text-3xl text-white/80 font-light max-w-3xl mx-auto leading-relaxed drop-shadow-lg"
                         >
                             High-fidelity agricultural simulations for Hytale modding.
                         </motion.p>
@@ -147,16 +148,17 @@ export function HeroSequence() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, delay: 1.2 }}
-                            className="flex flex-wrap justify-center gap-4 pt-8 pointer-events-auto"
+                            className="flex flex-col sm:flex-row gap-5 pt-4 pointer-events-auto"
                         >
-                            <a href="/docs" className="px-8 py-4 rounded-full bg-white text-slate-900 font-medium hover:bg-slate-200 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.2)]">
-                                Read Documentation
+                            <a href="/docs" className="group relative px-8 py-4 rounded-full bg-white text-slate-950 font-medium overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]">
+                                <span className="relative z-10">Read Documentation</span>
+                                <div className="absolute inset-0 bg-gradient-to-r from-purple-100 to-white opacity-0 group-hover:opacity-100 transition-opacity" />
                             </a>
-                            <a href="/farming" className="px-8 py-4 rounded-full bg-white/10 border border-white/20 text-white font-medium hover:bg-white/20 transition-all backdrop-blur-xl">
+                            <a href="/farming" className="group px-8 py-4 rounded-full bg-white/5 border border-white/10 text-white font-medium hover:bg-white/10 transition-all backdrop-blur-md hover:scale-105 hover:border-white/30">
                                 Launch Simulators
                             </a>
                         </motion.div>
-                    </div>
+                    </motion.div>
                 </motion.div>
 
                 {/* Gradient Overlay for Text Readability */}
