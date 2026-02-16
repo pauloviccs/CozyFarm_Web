@@ -13,6 +13,8 @@ interface AuthContextType {
     signUpWithEmail: (email: string, password: string) => Promise<{ error: any }>;
     signOut: () => Promise<void>;
     toggleItemCompletion: (itemId: string) => Promise<void>;
+    markItemsAsCompleted: (itemIds: string[]) => Promise<void>;
+    markItemsAsIncomplete: (itemIds: string[]) => Promise<void>;
     isLoading: boolean;
 }
 
@@ -141,6 +143,51 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
     };
 
+    const markItemsAsCompleted = async (itemIds: string[]) => {
+        if (!user || itemIds.length === 0) return;
+
+        const newCompletedItems = new Set(completedItems);
+        itemIds.forEach(id => newCompletedItems.add(id));
+        setCompletedItems(newCompletedItems);
+
+        try {
+            const { error } = await supabase
+                .from('user_items')
+                .upsert(
+                    itemIds.map(itemId => ({ user_id: user.id, item_id: itemId })),
+                    { onConflict: 'user_id,item_id' }
+                );
+
+            if (error) throw error;
+        } catch (error) {
+            console.error('Error marking items as complete:', error);
+            setCompletedItems(completedItems);
+            alert('Failed to update items. Please try again.');
+        }
+    };
+
+    const markItemsAsIncomplete = async (itemIds: string[]) => {
+        if (!user || itemIds.length === 0) return;
+
+        const newCompletedItems = new Set(completedItems);
+        itemIds.forEach(id => newCompletedItems.delete(id));
+        setCompletedItems(newCompletedItems);
+
+        try {
+            const { error } = await supabase
+                .from('user_items')
+                .delete()
+                .in('item_id', itemIds)
+                .eq('user_id', user.id);
+
+            if (error) throw error;
+        } catch (error) {
+            console.error('Error marking items as incomplete:', error);
+            setCompletedItems(completedItems);
+            alert('Failed to update items. Please try again.');
+        }
+    };
+
     return (
         <AuthContext.Provider value={{
             session,
@@ -151,6 +198,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             signUpWithEmail,
             signOut,
             toggleItemCompletion,
+            markItemsAsCompleted,
+            markItemsAsIncomplete,
             isLoading
         }}>
             {children}

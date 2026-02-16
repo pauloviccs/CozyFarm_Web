@@ -12,6 +12,15 @@ export const translations = {
             system: 'Sistema',
             reference: 'Referência',
         },
+        items: {
+            select_mode: 'Selecionar Itens',
+            cancel_selection: 'Cancelar Seleção',
+            mark_complete: 'Marcar como Completo',
+            mark_incomplete: 'Marcar como Incompleto',
+            selected_count: '{count} Selecionado(s)',
+            select_all: 'Selecionar Todos',
+            deselect_all: 'Desmarcar Todos',
+        },
         auth: {
             login_discord: 'Entrar com Discord',
             login: 'Entrar',
@@ -187,6 +196,15 @@ export const translations = {
             items: 'Items',
             system: 'System',
             reference: 'Reference',
+        },
+        items: {
+            select_mode: 'Select Items',
+            cancel_selection: 'Cancel Selection',
+            mark_complete: 'Mark Complete',
+            mark_incomplete: 'Mark Incomplete',
+            selected_count: '{count} Selected',
+            select_all: 'Select All',
+            deselect_all: 'Deselect All',
         },
         auth: {
             login_discord: 'Login with Discord',
