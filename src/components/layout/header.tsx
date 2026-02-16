@@ -3,11 +3,12 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
-import { LogOut, User, ChevronDown, LogIn } from "lucide-react";
+import { LogOut, User, ChevronDown, LogIn, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LanguageToggle } from "./language-toggle";
 import { motion, AnimatePresence } from "framer-motion";
 import { AuthModal } from "@/components/auth/AuthModal";
+import Link from "next/link";
 
 export function Header() {
     const { user, signOut } = useAuth();
@@ -57,16 +58,16 @@ export function Header() {
                                     <img
                                         src={user.user_metadata.avatar_url}
                                         alt={user.user_metadata.full_name}
-                                        className="w-8 h-8 rounded-full border border-white/10 shadow-sm"
+                                        className="w-8 h-8 rounded-full border border-white/10 shadow-sm object-cover"
                                     />
                                 ) : (
                                     <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center border border-purple-500/30 text-purple-300 text-xs font-bold">
-                                        {user.email?.charAt(0).toUpperCase()}
+                                        {(user.user_metadata.nickname || user.email)?.charAt(0).toUpperCase()}
                                     </div>
                                 )}
                                 <div className="flex flex-col items-start mr-1">
                                     <span className="text-sm font-medium text-white group-hover:text-purple-200 transition-colors">
-                                        {user.user_metadata.full_name?.split(' ')[0] || user.email?.split('@')[0]}
+                                        {user.user_metadata.nickname || user.user_metadata.full_name?.split(' ')[0] || user.email?.split('@')[0]}
                                     </span>
                                 </div>
                                 <ChevronDown className={cn("w-4 h-4 text-white/40 transition-transform duration-300", isProfileOpen && "rotate-180")} />
@@ -85,12 +86,22 @@ export function Header() {
                                                 {t("auth.logged_in")}
                                             </p>
                                             <p className="text-sm text-white truncate font-medium">
-                                                {user.user_metadata.full_name || "User"}
+                                                {user.user_metadata.nickname || user.user_metadata.full_name || "User"}
                                             </p>
                                             <p className="text-xs text-white/50 truncate">
                                                 {user.email}
                                             </p>
                                         </div>
+
+                                        <Link
+                                            href="/settings"
+                                            onClick={() => setIsProfileOpen(false)}
+                                            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors mb-1"
+                                        >
+                                            <Settings className="w-4 h-4" />
+                                            <span>Configurações</span>
+                                        </Link>
+
                                         <button
                                             onClick={() => {
                                                 signOut();
