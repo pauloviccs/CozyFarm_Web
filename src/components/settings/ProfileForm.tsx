@@ -17,6 +17,38 @@ export function ProfileForm() {
     const [avatarUrl, setAvatarUrl] = useState(user?.user_metadata?.avatar_url || "");
 
     const supabase = createClient();
+    const [isUploading, setIsUploading] = useState(false);
+
+    const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files || e.target.files.length === 0) return;
+
+        setIsUploading(true);
+        setMessage(null);
+
+        try {
+            const file = e.target.files[0];
+            const fileExt = file.name.split('.').pop();
+            const filePath = `public/${user?.id}/${Date.now()}.${fileExt}`;
+
+            const { error: uploadError } = await supabase.storage
+                .from('avatars')
+                .upload(filePath, file);
+
+            if (uploadError) throw uploadError;
+
+            const { data: { publicUrl } } = supabase.storage
+                .from('avatars')
+                .getPublicUrl(filePath);
+
+            setAvatarUrl(publicUrl);
+            setMessage({ type: 'success', text: 'Imagem carregada! Não esqueça de salvar.' });
+        } catch (error: any) {
+            console.error('Error uploads avatar:', error);
+            setMessage({ type: 'error', text: 'Erro ao fazer upload da imagem.' });
+        } finally {
+            setIsUploading(false);
+        }
+    };
 
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -57,8 +89,8 @@ export function ProfileForm() {
                 <div className="flex flex-col md:flex-row gap-8 items-start">
                     {/* Avatar Section */}
                     <div className="flex flex-col items-center gap-4">
-                        <div className="relative group">
-                            <div className="w-28 h-28 rounded-full overflow-hidden bg-slate-950 border-2 border-white/10 shadow-xl">
+                        <div className="relative group cursor-pointer" onClick={() => document.getElementById('avatar-upload')?.click()}>
+                            <div className="w-28 h-28 rounded-full overflow-hidden bg-slate-950 border-2 border-white/10 shadow-xl relative">
                                 {avatarUrl ? (
                                     <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-50" />
                                 ) : (
@@ -66,15 +98,28 @@ export function ProfileForm() {
                                         <User className="w-12 h-12" />
                                     </div>
                                 )}
+                                {isUploading && (
+                                    <div className="absolute inset-0 flex items-center justify-center bg-black/60 z-20">
+                                        <Loader2 className="w-8 h-8 text-purple-500 animate-spin" />
+                                    </div>
+                                )}
                             </div>
-                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
                                 <Camera className="w-6 h-6 text-white drop-shadow-md" />
                             </div>
+                            <input
+                                type="file"
+                                id="avatar-upload"
+                                className="hidden"
+                                accept="image/*"
+                                onChange={handleAvatarUpload}
+                                disabled={isUploading || isLoading}
+                            />
                         </div>
                         <div className="text-center space-y-1">
                             <p className="text-xs font-medium text-white/70">Foto de Perfil</p>
                             <p className="text-[10px] text-white/30 max-w-[120px]">
-                                Cole uma URL de imagem válida abaixo.
+                                Clique para fazer upload ou cole uma URL.
                             </p>
                         </div>
                     </div>
