@@ -6,7 +6,7 @@ import { useLanguage } from "@/context/LanguageContext";
 export default function IndustryPage() {
     const { t } = useLanguage();
     return (
-        <div className="space-y-12 max-w-7xl mx-auto">
+        <div className="space-y-12 max-w-7xl mx-auto px-8 lg:px-12 pt-8 lg:pt-12">
             <section className="space-y-6">
                 <div className="flex flex-col gap-2">
                     <h1 className="text-4xl font-light text-white tracking-tight">

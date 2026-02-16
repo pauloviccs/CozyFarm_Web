@@ -5,7 +5,7 @@ import { useLanguage } from "@/context/LanguageContext";
 export default function DocsPage() {
     const { t } = useLanguage();
     return (
-        <div className="space-y-6">
+        <div className="max-w-4xl mx-auto space-y-6 px-8 lg:px-12 pt-8 lg:pt-12">
             <h1 className="text-4xl font-light text-white tracking-tight">{t("docs.introTitle")}</h1>
             <p className="text-lg text-white/70 leading-relaxed">
                 {t("docs.introText")}
