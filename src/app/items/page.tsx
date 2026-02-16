@@ -115,7 +115,7 @@ export default function ItemsPage() {
   };
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto pb-20 px-8 lg:px-12 pt-8 lg:pt-12">
+    <div className="space-y-8 max-w-7xl mx-auto pb-20 px-8 lg:px-12 pt-24 lg:pt-32">
       <section className="space-y-6">
         <div className="flex flex-col gap-2">
           <h1 className="text-4xl font-light text-white tracking-tight">
@@ -129,7 +129,7 @@ export default function ItemsPage() {
         </div>
 
         {/* Filters & Actions Toolbar */}
-        <GlassCard className="p-6 space-y-6 sticky top-24 z-30 backdrop-blur-xl bg-slate-900/80 border-white/10 shadow-2xl">
+        <GlassCard className="p-6 space-y-6 backdrop-blur-xl bg-slate-900/80 border-white/10 shadow-2xl">
           {/* Top Row: Search and Primary Controls */}
           <div className="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center">
             {/* Search Input */}

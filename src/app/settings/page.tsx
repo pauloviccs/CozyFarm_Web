@@ -30,7 +30,7 @@ export default function SettingsPage() {
     if (!user) return null;
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8 pb-20 pt-8 px-8 lg:px-12">
+        <div className="max-w-4xl mx-auto space-y-8 pb-20 pt-24 lg:pt-32 px-8 lg:px-12">
             <header className="space-y-2">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-xl border border-white/10">

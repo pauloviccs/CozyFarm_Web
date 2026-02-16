@@ -6,7 +6,7 @@ import { useLanguage } from "@/context/LanguageContext";
 export default function AutomationPage() {
     const { t } = useLanguage();
     return (
-        <div className="space-y-12 max-w-7xl mx-auto px-8 lg:px-12 pt-8 lg:pt-12">
+        <div className="space-y-12 max-w-7xl mx-auto px-8 lg:px-12 pt-24 lg:pt-32">
             <section className="space-y-6">
                 <div className="flex flex-col gap-2">
                     <h1 className="text-4xl font-light text-white tracking-tight">
