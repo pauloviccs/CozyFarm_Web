@@ -107,13 +107,14 @@ export function HeroSequence() {
     }, [currentIndex, imagesLoaded, images]);
 
     // Overlay Animation Hooks
-    const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [1, 1, 0, 0]);
-    const scale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
-    const textY = useTransform(scrollYProgress, [0, 0.3], [0, 100]);
+    const opacity = useTransform(scrollYProgress, [0, 0.4, 0.8], [1, 0.8, 0]);
+    const scale = useTransform(scrollYProgress, [0, 1], [1, 0.8]);
+    const textY = useTransform(scrollYProgress, [0, 1], [0, -600]);
+    const rotateX = useTransform(scrollYProgress, [0, 1], [0, 45]);
 
     return (
         <div ref={containerRef} className="h-[300vh] relative">
-            <div className="sticky top-0 h-screen w-full overflow-hidden">
+            <div className="sticky top-0 h-screen w-full overflow-hidden perspective-[1000px]">
                 <AnimatePresence mode="wait">
                     {!imagesLoaded && (
                         <motion.div
@@ -147,12 +148,12 @@ export function HeroSequence() {
 
                 {/* Cinematic Overlay */}
                 <motion.div
-                    className="absolute inset-0 flex flex-col items-center justify-center text-center z-10 pointer-events-none"
+                    className="absolute inset-0 flex flex-col items-center justify-center text-center z-10 pointer-events-none perspective-[1000px]"
                     style={{ opacity }}
                 >
                     <motion.div
-                        className="max-w-5xl px-6 space-y-10 flex flex-col items-center"
-                        style={{ scale, y: textY }}
+                        className="max-w-5xl px-6 space-y-10 flex flex-col items-center origin-bottom"
+                        style={{ scale, y: textY, rotateX }}
                     >
                         <motion.div
                             initial={{ opacity: 0, y: 30 }}
