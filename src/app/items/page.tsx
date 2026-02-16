@@ -382,12 +382,13 @@ export default function ItemsPage() {
                     )}
                   </div>
 
-                  {(item.value !== undefined || item.source) && (
+                  {(item.value !== undefined || item.source || item.hytaleId) && (
                     <div className="flex flex-wrap gap-2 text-xs text-white/50 mt-auto pt-2 border-t border-white/5">
                       {item.value !== undefined && item.value > 0 && (
                         <span>{item.value}g</span>
                       )}
                       {item.source && <span>• {item.source}</span>}
+                      {item.hytaleId && <span className="font-mono text-purple-300/80 bg-purple-500/10 px-1 rounded ml-auto">{item.hytaleId}</span>}
                     </div>
                   )}
                 </GlassCard>

@@ -88,6 +88,12 @@ export function Sidebar() {
                     <span className="w-full h-px bg-white/5"></span>
                 </div>
                 <NavItem
+                    to="/docs/ids"
+                    icon={Package}
+                    label="IDs de Itens"
+                    active={pathname === "/docs/ids"}
+                />
+                <NavItem
                     to="/docs"
                     icon={BookOpen}
                     label={t("nav.docs")}
