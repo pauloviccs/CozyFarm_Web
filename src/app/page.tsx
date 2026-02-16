@@ -6,16 +6,18 @@ import { Sprout, Factory, Bot, ArrowRight, BookOpen, Sparkles } from "lucide-rea
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/context/LanguageContext";
+import { HeroSequence } from "@/components/home/HeroSequence";
 
 export default function Home() {
   const { t } = useLanguage();
   return (
     <div className="space-y-12 max-w-7xl mx-auto">
       {/* Hero Section */}
-      <section className="relative py-12 lg:py-20 flex flex-col items-center text-center space-y-6">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-purple-500/20 blur-[100px] rounded-full pointer-events-none opacity-50" />
+      <HeroSequence />
 
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-purple-300 backdrop-blur-md mb-4">
+      <section className="relative -mt-20 py-12 flex flex-col items-center text-center space-y-6 z-10 pointer-events-none">
+
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-purple-300 backdrop-blur-md mb-4 pointer-events-auto">
           <Sparkles className="w-3 h-3" />
           <span>{t("overview.badge")}</span>
         </div>
@@ -28,7 +30,7 @@ export default function Home() {
           {t("overview.heroSubtitle")}
         </p>
 
-        <div className="flex flex-wrap gap-4 pt-4 relative z-10">
+        <div className="flex flex-wrap gap-4 pt-4 relative z-10 pointer-events-auto">
           <Link href="/docs">
             <button className="px-8 py-3 rounded-full bg-white text-slate-900 font-medium hover:bg-slate-200 transition-colors shadow-lg shadow-white/10">
               {t("overview.readDocs")}
