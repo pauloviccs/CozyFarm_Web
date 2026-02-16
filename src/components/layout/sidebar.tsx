@@ -70,22 +70,10 @@ export function Sidebar() {
                 </div>
 
                 <NavItem
-                    to="/farming"
-                    icon={Sprout}
-                    label={t("nav.farming")}
-                    active={pathname === "/farming"}
-                />
-                <NavItem
                     to="/industry"
                     icon={Factory}
                     label={t("nav.industry")}
                     active={pathname === "/industry"}
-                />
-                <NavItem
-                    to="/automation"
-                    icon={Bot}
-                    label={t("nav.automation")}
-                    active={pathname === "/automation"}
                 />
                 <NavItem
                     to="/items"
