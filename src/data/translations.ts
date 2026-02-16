@@ -12,6 +12,11 @@ export const translations = {
             system: 'Sistema',
             reference: 'Referência',
         },
+        auth: {
+            login_discord: 'Entrar com Discord',
+            logout: 'Sair',
+            logged_in: 'Conectado como',
+        },
         overview: {
             welcomeTitle: 'Bem-vindo ao CozyTale Docs',
             welcomeDesc: 'Este é o blueprint de design interativo para o mod CozyFarming. Use a barra lateral para navegar entre especificações técnicas e simuladores ao vivo.',
@@ -172,6 +177,11 @@ export const translations = {
             items: 'Items',
             system: 'System',
             reference: 'Reference',
+        },
+        auth: {
+            login_discord: 'Login with Discord',
+            logout: 'Logout',
+            logged_in: 'Logged in as',
         },
         overview: {
             welcomeTitle: 'Welcome to CozyTale Docs',

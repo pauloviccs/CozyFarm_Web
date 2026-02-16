@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Sidebar } from "@/components/layout/sidebar";
-import { LanguageToggle } from "@/components/layout/language-toggle";
 import { LanguageProvider } from "@/context/LanguageContext";
 import "./globals.css";
 
@@ -13,6 +12,8 @@ export const metadata: Metadata = {
 };
 
 import { AuthProvider } from "@/context/AuthContext";
+
+import { Header } from "@/components/layout/header";
 
 export default function RootLayout({
   children,
@@ -26,7 +27,7 @@ export default function RootLayout({
           <AuthProvider>
             <Sidebar />
             <div className="flex-1 relative flex flex-col min-w-0 min-h-0 overflow-hidden">
-              <LanguageToggle />
+              <Header />
               <div className="fluid-bg absolute inset-0 pointer-events-none" />
               <main className="flex-1 min-h-0 overflow-y-auto p-8 lg:p-12 relative z-10 scroll-smooth">
                 {children}
