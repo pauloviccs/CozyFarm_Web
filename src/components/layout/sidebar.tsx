@@ -107,17 +107,7 @@ export function Sidebar() {
                 />
             </nav>
 
-            <div className="mt-auto pt-6 border-t border-white/5">
-                <div className="bg-white/5 p-4 rounded-xl border border-white/5 hover:bg-white/10 transition-colors">
-                    <p className="text-xs text-white/40 mb-1 uppercase tracking-wider">Status</p>
-                    <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-                        <span className="text-sm text-emerald-400 font-medium">
-                            V 2.0 (Next.js)
-                        </span>
-                    </div>
-                </div>
-            </div>
+
         </aside>
     );
 }
