@@ -79,7 +79,7 @@ export function Header() {
                                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                                         animate={{ opacity: 1, y: 0, scale: 1 }}
                                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                        className="absolute top-full right-0 mt-2 w-56 p-2 rounded-xl bg-slate-900/90 backdrop-blur-xl border border-white/10 shadow-xl overflow-hidden origin-top-right z-50"
+                                        className="absolute top-full right-0 mt-2 w-56 p-2 rounded-xl bg-slate-900/90 backdrop-blur-xl border border-white/10 shadow-xl overflow-hidden origin-top-right z-[100]"
                                     >
                                         <div className="px-3 py-2 border-b border-white/5 mb-2">
                                             <p className="text-xs text-white/40 font-medium uppercase tracking-wider mb-1">
