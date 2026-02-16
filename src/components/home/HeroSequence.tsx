@@ -98,6 +98,11 @@ export function HeroSequence() {
         return () => window.removeEventListener("resize", handleResize);
     }, [currentIndex, imagesLoaded]); // Dependency ensures resize re-renders current frame
 
+    // Overlay Animation Hooks
+    const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [1, 1, 0, 0]);
+    const scale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
+    const textY = useTransform(scrollYProgress, [0, 0.3], [0, 100]);
+
     return (
         <div ref={containerRef} className="h-[300vh] relative">
             <div className="sticky top-0 h-screen w-full overflow-hidden">
@@ -105,8 +110,57 @@ export function HeroSequence() {
                     ref={canvasRef}
                     className="absolute inset-0 w-full h-full object-cover"
                 />
-                {/* Overlay Content if needed */}
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-950/20 to-slate-950 pointer-events-none" />
+
+                {/* Cinematic Overlay */}
+                <motion.div
+                    className="absolute inset-0 flex flex-col items-center justify-center text-center z-10 pointer-events-none"
+                    style={{ opacity, scale }}
+                >
+                    <div className="max-w-4xl px-6 space-y-8">
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 1, ease: "easeOut", delay: 0.5 }}
+                            style={{ y: textY }}
+                        >
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-purple-300 backdrop-blur-md mb-6 pointer-events-auto">
+                                <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+                                <span>Interactive Blueprint System</span>
+                            </div>
+
+                            <h1 className="text-7xl lg:text-9xl font-thin tracking-tighter text-white mb-6">
+                                Cozy<span className="font-normal text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-emerald-400">Farming</span>
+                            </h1>
+                        </motion.div>
+
+                        <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 1, delay: 0.8 }}
+                            className="text-2xl text-white/60 font-light max-w-2xl mx-auto leading-relaxed"
+                            style={{ y: textY }}
+                        >
+                            High-fidelity agricultural simulations for Hytale modding.
+                        </motion.p>
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 1.2 }}
+                            className="flex flex-wrap justify-center gap-4 pt-8 pointer-events-auto"
+                        >
+                            <a href="/docs" className="px-8 py-4 rounded-full bg-white text-slate-900 font-medium hover:bg-slate-200 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+                                Read Documentation
+                            </a>
+                            <a href="/farming" className="px-8 py-4 rounded-full bg-white/10 border border-white/20 text-white font-medium hover:bg-white/20 transition-all backdrop-blur-xl">
+                                Launch Simulators
+                            </a>
+                        </motion.div>
+                    </div>
+                </motion.div>
+
+                {/* Gradient Overlay for Text Readability */}
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-slate-950/40 pointer-events-none" />
             </div>
         </div>
     );
