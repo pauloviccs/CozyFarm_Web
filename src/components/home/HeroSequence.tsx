@@ -1,6 +1,6 @@
 "use client";
 
-import { useScroll, useTransform, motion } from "framer-motion";
+import { useScroll, useTransform, motion, AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 const frameCount = 80; // 000 to 079
@@ -10,6 +10,7 @@ export function HeroSequence() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [images, setImages] = useState<HTMLImageElement[]>([]);
     const [imagesLoaded, setImagesLoaded] = useState(false);
+    const [loadingProgress, setLoadingProgress] = useState(0);
 
     const { scrollYProgress } = useScroll({
         target: containerRef,
@@ -22,6 +23,7 @@ export function HeroSequence() {
         const loadImages = async () => {
             const loadedImages: HTMLImageElement[] = [];
             const promises: Promise<void>[] = [];
+            let loadedCount = 0;
 
             for (let i = 0; i < frameCount; i++) {
                 const promise = new Promise<void>((resolve) => {
@@ -30,6 +32,8 @@ export function HeroSequence() {
                     img.src = `/hero-sequence/1080p_${paddedIndex}.jpg`;
                     img.onload = () => {
                         loadedImages[i] = img;
+                        loadedCount++;
+                        setLoadingProgress(Math.round((loadedCount / frameCount) * 100));
                         resolve();
                     };
                 });
@@ -38,7 +42,8 @@ export function HeroSequence() {
 
             await Promise.all(promises);
             setImages(loadedImages);
-            setImagesLoaded(true);
+            // Small delay to ensure 100% is seen
+            setTimeout(() => setImagesLoaded(true), 500);
         };
 
         loadImages();
@@ -88,7 +93,10 @@ export function HeroSequence() {
             if (canvasRef.current) {
                 canvasRef.current.width = window.innerWidth;
                 canvasRef.current.height = window.innerHeight;
-                render(currentIndex.get());
+                // Only render if images are loaded to avoid errors
+                if (images.length > 0) {
+                    render(currentIndex.get());
+                }
             }
         };
 
@@ -96,7 +104,7 @@ export function HeroSequence() {
         handleResize(); // Init size
 
         return () => window.removeEventListener("resize", handleResize);
-    }, [currentIndex, imagesLoaded]); // Dependency ensures resize re-renders current frame
+    }, [currentIndex, imagesLoaded, images]);
 
     // Overlay Animation Hooks
     const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [1, 1, 0, 0]);
@@ -106,6 +114,32 @@ export function HeroSequence() {
     return (
         <div ref={containerRef} className="h-[300vh] relative">
             <div className="sticky top-0 h-screen w-full overflow-hidden">
+                <AnimatePresence mode="wait">
+                    {!imagesLoaded && (
+                        <motion.div
+                            key="loader"
+                            initial={{ opacity: 1 }}
+                            exit={{ opacity: 0, transition: { duration: 0.8, ease: "easeInOut" } }}
+                            className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-slate-950 text-white"
+                        >
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ duration: 0.5 }}
+                                className="flex flex-col items-center space-y-6"
+                            >
+                                <div className="text-6xl md:text-8xl font-thin tracking-tighter tabular-nums">
+                                    {loadingProgress}%
+                                </div>
+                                <div className="h-px w-32 bg-gradient-to-r from-transparent via-white/50 to-transparent" />
+                                <p className="text-white/60 font-light tracking-widest uppercase text-sm">
+                                    Carregando sua experiência
+                                </p>
+                            </motion.div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
                 <canvas
                     ref={canvasRef}
                     className="absolute inset-0 w-full h-full object-cover"
