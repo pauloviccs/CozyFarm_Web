@@ -40,15 +40,13 @@ export function Header() {
         <>
             <header
                 className={cn(
-                    "sticky top-0 z-40 w-full px-8 py-4 flex items-center justify-end gap-4 transition-all duration-300",
+                    "sticky top-0 z-40 w-full px-8 py-4 flex items-center justify-between gap-4 transition-all duration-300",
                     scrolled ? "bg-slate-950/50 backdrop-blur-md border-b border-white/5 py-3" : "bg-transparent"
                 )}
             >
+                <LanguageToggle />
+
                 <div className="flex items-center gap-3">
-                    <LanguageToggle />
-
-                    <div className="h-6 w-px bg-white/10" />
-
                     {user ? (
                         <div className="relative">
                             <button
