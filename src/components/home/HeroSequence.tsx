@@ -165,8 +165,8 @@ export function HeroSequence() {
                                 <span className="tracking-wide uppercase">Interactive Blueprint System</span>
                             </div>
 
-                            <h1 className="text-8xl lg:text-[10rem] font-thin tracking-tighter text-white mb-2 leading-none select-none drop-shadow-2xl">
-                                Cozy<span className="font-normal text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-fuchsia-400 to-emerald-400">Farming</span>
+                            <h1 className="text-8xl lg:text-[10rem] font-thin tracking-tighter text-white mb-2 leading-none select-none drop-shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
+                                Cozy<span className="font-normal text-white">Farming</span>
                             </h1>
                         </motion.div>
 
