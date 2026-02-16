@@ -51,7 +51,7 @@ export function Sidebar() {
             <div className="mb-10 px-2 flex items-center gap-2">
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-blue-500 shadow-lg shadow-purple-500/20 animate-pulse" />
                 <span className="text-xl font-bold tracking-tight text-white/90">
-                    CozyTale <span className="text-purple-400 text-xs align-top">Next</span>
+                    CozyTale <span className="text-purple-400 text-xs align-top">WIP</span>
                 </span>
             </div>
 
