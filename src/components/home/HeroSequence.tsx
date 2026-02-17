@@ -1,44 +1,117 @@
 import { useScroll, useMotionValueEvent, motion, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from 'next/link';
 
 export function HeroSequence() {
     const containerRef = useRef<HTMLDivElement>(null);
-    const videoRef = useRef<HTMLVideoElement>(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const [images, setImages] = useState<HTMLImageElement[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    const frameCount = 80;
+    const currentFrame = useRef(0);
 
     const { scrollYProgress } = useScroll({
         target: containerRef,
         offset: ["start start", "end end"],
     });
 
+    useEffect(() => {
+        const loadImages = async () => {
+            const loadedImages: HTMLImageElement[] = [];
+            const imagePromises: Promise<void>[] = [];
+
+            for (let i = 0; i < frameCount; i++) {
+                const img = new Image();
+                const filename = `1080p_5.Mp4_Conv_${i.toString().padStart(3, '0')}.jpg`;
+                img.src = `/hero-sequence/${filename}`;
+
+                const promise = new Promise<void>((resolve) => {
+                    img.onload = () => resolve();
+                    img.onerror = () => resolve(); // Continuing despite error to avoid breaking the sequence completely
+                });
+
+                loadedImages.push(img);
+                imagePromises.push(promise);
+            }
+
+            setImages(loadedImages);
+
+            // Draw first frame immediately
+            if (loadedImages[0].complete) {
+                renderFrame(0, loadedImages);
+            } else {
+                loadedImages[0].onload = () => renderFrame(0, loadedImages);
+            }
+
+            setIsLoading(false);
+        };
+
+        loadImages();
+    }, []);
+
+    const renderFrame = (index: number, imgs: HTMLImageElement[]) => {
+        const canvas = canvasRef.current;
+        const ctx = canvas?.getContext("2d");
+        const img = imgs[index];
+
+        if (!canvas || !ctx || !img || !img.complete) return;
+
+        // Scaling to cover
+        const canvasRatio = canvas.width / canvas.height;
+        const imgRatio = img.width / img.height;
+
+        let drawWidth = canvas.width;
+        let drawHeight = canvas.height;
+        let offsetX = 0;
+        let offsetY = 0;
+
+        if (canvasRatio > imgRatio) {
+            drawHeight = canvas.width / imgRatio;
+            offsetY = (canvas.height - drawHeight) / 2;
+        } else {
+            drawWidth = canvas.height * imgRatio;
+            offsetX = (canvas.width - drawWidth) / 2;
+        }
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+    };
+
+    // Update canvas size on resize
+    useEffect(() => {
+        const handleResize = () => {
+            if (canvasRef.current) {
+                canvasRef.current.width = window.innerWidth;
+                canvasRef.current.height = window.innerHeight;
+                renderFrame(currentFrame.current, images);
+            }
+        };
+
+        window.addEventListener("resize", handleResize);
+        handleResize();
+
+        return () => window.removeEventListener("resize", handleResize);
+    }, [images]);
+
     useMotionValueEvent(scrollYProgress, "change", (latest) => {
-        if (videoRef.current && videoRef.current.duration) {
-            // Clamp the value between 0 and 0.999 to avoid loop/restart issues at exact 1.0
-            const progress = Math.min(Math.max(latest, 0), 0.999);
-            const time = progress * videoRef.current.duration;
-            // Use fastSeek if available for smoother scrubbing, fallback to currentTime
-            // simple currentTime is often smoother for frame-by-frame updates in modern browsers unless keyframe interval is large
-            // Our ffmpeg workflow uses -g 1 (all-intra), so currentTime is perfectly fast.
-            videoRef.current.currentTime = time;
+        const frameIndex = Math.min(
+            frameCount - 1,
+            Math.floor(latest * frameCount)
+        );
+
+        if (frameIndex !== currentFrame.current && images.length > 0) {
+            currentFrame.current = frameIndex;
+            requestAnimationFrame(() => renderFrame(frameIndex, images));
         }
     });
 
     return (
-        <div ref={containerRef} className="h-[300vh] relative">
+        <div ref={containerRef} className="h-[300vh] relative bg-black">
             <div className="sticky top-0 h-screen w-full overflow-hidden">
-                <video
-                    ref={videoRef}
-                    src="/hero-sequence.mp4"
-                    muted
-                    playsInline
-                    preload="auto"
-                    className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-                    // Ensure the video is loaded and ready
-                    onLoadedMetadata={() => {
-                        if (videoRef.current) {
-                            videoRef.current.currentTime = 0;
-                        }
-                    }}
+                <canvas
+                    ref={canvasRef}
+                    className="absolute inset-0 w-full h-full object-cover"
                 />
 
                 {/* Cinematic Overlay */}
