@@ -1,12 +1,15 @@
+"use client";
+
 import { useScroll, useMotionValueEvent, motion, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import Link from 'next/link';
+import { useLoading } from "@/context/LoadingContext";
 
 export function HeroSequence() {
     const containerRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [images, setImages] = useState<HTMLImageElement[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const { setIsLoading, setProgress } = useLoading();
 
     const frameCount = 80;
     const currentFrame = useRef(0);
@@ -20,6 +23,7 @@ export function HeroSequence() {
         const loadImages = async () => {
             const loadedImages: HTMLImageElement[] = [];
             const imagePromises: Promise<void>[] = [];
+            let loadedCount = 0;
 
             for (let i = 0; i < frameCount; i++) {
                 const img = new Image();
@@ -27,28 +31,34 @@ export function HeroSequence() {
                 img.src = `/hero-sequence/${filename}`;
 
                 const promise = new Promise<void>((resolve) => {
-                    img.onload = () => resolve();
-                    img.onerror = () => resolve(); // Continuing despite error to avoid breaking the sequence completely
+                    const onLoad = () => {
+                        loadedCount++;
+                        // Update progress (0-100)
+                        setProgress((loadedCount / frameCount) * 100);
+                        resolve();
+                    };
+                    img.onload = onLoad;
+                    img.onerror = onLoad;
                 });
 
                 loadedImages.push(img);
                 imagePromises.push(promise);
             }
 
-            setImages(loadedImages);
+            Promise.all(imagePromises).then(() => {
+                setImages(loadedImages);
+                setIsLoading(false);
 
-            // Draw first frame immediately
-            if (loadedImages[0].complete) {
-                renderFrame(0, loadedImages);
-            } else {
-                loadedImages[0].onload = () => renderFrame(0, loadedImages);
-            }
-
-            setIsLoading(false);
+                // Draw first frame immediately
+                if (loadedImages[0] && loadedImages[0].complete) {
+                    // Small delay to ensure canvas ref is ready and context is cleared
+                    requestAnimationFrame(() => renderFrame(0, loadedImages));
+                }
+            });
         };
 
         loadImages();
-    }, []);
+    }, [setIsLoading, setProgress]);
 
     const renderFrame = (index: number, imgs: HTMLImageElement[]) => {
         const canvas = canvasRef.current;
@@ -170,4 +180,3 @@ export function HeroSequence() {
         </div>
     );
 }
-

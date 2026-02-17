@@ -12,7 +12,8 @@ export const metadata: Metadata = {
 };
 
 import { AuthProvider } from "@/context/AuthContext";
-
+import { LoadingProvider } from "@/context/LoadingContext";
+import { LoadingScreen } from "@/components/ui/LoadingScreen";
 import { Header } from "@/components/layout/header";
 
 export default function RootLayout({
@@ -25,16 +26,19 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans flex min-h-screen bg-slate-950 text-slate-50 selection:bg-purple-500/30`}>
         <LanguageProvider>
           <AuthProvider>
-            <Sidebar />
-            <div className="flex-1 relative flex flex-col">
-              <div className="absolute top-0 w-full z-50">
-                <Header />
+            <LoadingProvider>
+              <LoadingScreen />
+              <Sidebar />
+              <div className="flex-1 relative flex flex-col">
+                <div className="absolute top-0 w-full z-50">
+                  <Header />
+                </div>
+                <div className="fluid-bg absolute inset-0 pointer-events-none fixed" />
+                <main className="flex-1 relative z-10 scroll-smooth">
+                  {children}
+                </main>
               </div>
-              <div className="fluid-bg absolute inset-0 pointer-events-none fixed" />
-              <main className="flex-1 relative z-10 scroll-smooth">
-                {children}
-              </main>
-            </div>
+            </LoadingProvider>
           </AuthProvider>
         </LanguageProvider>
       </body>
