@@ -117,7 +117,7 @@ export function HeroSequence() {
     });
 
     return (
-        <div ref={containerRef} className="h-[300vh] relative bg-black">
+        <div ref={containerRef} className="h-[300vh] relative bg-black" onContextMenu={(e) => e.preventDefault()}>
             <div className="sticky top-0 h-screen w-full overflow-hidden">
                 <canvas
                     ref={canvasRef}
@@ -129,7 +129,7 @@ export function HeroSequence() {
                     <motion.div
                         className="max-w-5xl px-6 space-y-10 flex flex-col items-center"
                         style={{
-                            opacity: useTransform(scrollYProgress, [0, 0.2, 0.4], [1, 1, 0]),
+                            opacity: useTransform(scrollYProgress, [0, 0.8, 1], [1, 1, 0]),
                             scale: useTransform(scrollYProgress, [0, 0.4], [1, 0.9])
                         }}
                     >
@@ -138,11 +138,6 @@ export function HeroSequence() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 1, ease: "easeOut", delay: 0.5 }}
                         >
-                            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-purple-300 backdrop-blur-md mb-8 pointer-events-auto hover:bg-white/10 transition-colors cursor-default">
-                                <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse shadow-[0_0_10px_rgba(192,132,252,0.5)]" />
-                                <span className="tracking-wide uppercase">Interactive Blueprint System</span>
-                            </div>
-
                             <h1 className="text-8xl lg:text-[10rem] font-thin tracking-tighter text-white mb-2 leading-none select-none drop-shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
                                 Cozy<span className="font-normal text-white">Farming</span>
                             </h1>
@@ -161,14 +156,11 @@ export function HeroSequence() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, delay: 1.2 }}
-                            className="flex flex-col sm:flex-row gap-5 pt-4 pointer-events-auto"
+                            className="flex justify-center pt-8 pointer-events-auto"
                         >
                             <Link href="/docs" className="group relative px-8 py-4 rounded-full bg-white text-slate-950 font-medium overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]">
                                 <span className="relative z-10">Read Documentation</span>
                                 <div className="absolute inset-0 bg-gradient-to-r from-purple-100 to-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                            </Link>
-                            <Link href="/farming" className="group px-8 py-4 rounded-full bg-white/5 border border-white/10 text-white font-medium hover:bg-white/10 transition-all backdrop-blur-md hover:scale-105 hover:border-white/30">
-                                Launch Simulators
                             </Link>
                         </motion.div>
                     </motion.div>
