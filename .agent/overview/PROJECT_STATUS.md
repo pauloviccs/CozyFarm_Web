@@ -43,14 +43,17 @@ src/
 │   ├── AuthContext.tsx
 │   └── LanguageContext.tsx
 ├── data/                # Static data definitions
-│   └── items.ts         # Central item database (Hytale & Stardew)
+│   ├── items.ts         # Central item database (Hytale & Stardew)
+│   └── translations.ts  # Multi-language support strings
 ├── lib/                 # Utilities (supabase client, cn helper)
 └── middleware.ts        # Next.js middleware (Auth protection)
+.agent/                  # Agent configuration and docs
+└── overview/            # Project status and overview
 ```
 
 ## Key Features
 
-- **Immersive Hero Section**: Scroll-driven image sequence animation with "Opening Crawl" text effect.
+- **Immersive Hero Section**: Scroll-driven image sequence animation.
 - **Liquid Glass UI**: Modern, translucent, and animated user interface design.
 - **Item Database**: Comprehensive list of Hytale and Stardew Valley items with filtering, search, and ID copying.
 - **Item IDs Reference**: Dedicated page for quick access to Hytale item IDs.
