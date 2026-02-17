@@ -23,7 +23,7 @@ export function HeroSequence() {
 
             for (let i = 0; i < frameCount; i++) {
                 const img = new Image();
-                const filename = `1080p_5.Mp4_Conv_${i.toString().padStart(3, '0')}.jpg`;
+                const filename = `heroanim_720p_${i.toString().padStart(3, '0')}.jpg`;
                 img.src = `/hero-sequence/${filename}`;
 
                 const promise = new Promise<void>((resolve) => {
